@@ -5,6 +5,8 @@
  *  Author: Elmar
  */ 
 
+//TEST
+
 #include "sam.h"
 
 /**
