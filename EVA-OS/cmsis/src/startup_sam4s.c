@@ -40,6 +40,11 @@ extern uint32_t _ezero;
 extern uint32_t _sstack;
 extern uint32_t _estack;
 
+extern uint32_t _sheap;
+extern uint32_t _eheap;
+extern uint32_t _hsize;
+extern uint32_t _end;
+
 /** \cond DOXYGEN_SHOULD_SKIP_THIS */
 int main(void);
 /** \endcond */
@@ -205,4 +210,27 @@ void Dummy_Handler(void)
 {
         while (1) {
         }
+}
+
+
+/**
+ * Function used by malloc to check if memory is available
+ */
+ char* _sbrk (int incr) 
+ {
+	static char* heap = NULL;
+	char *prev_heap, *next_heap;
+		
+	if (heap == NULL)
+		heap = (char*)&_sheap;
+		
+	prev_heap = heap;
+	next_heap = (char*)(heap + incr);
+	
+	if (next_heap > (char*)&_eheap) {
+		return NULL; 
+	} else {
+		heap = next_heap;
+		return (char*) prev_heap;
+	}
 }

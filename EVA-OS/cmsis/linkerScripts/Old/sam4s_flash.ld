@@ -2,7 +2,7 @@
 /*                  Atmel Microcontroller Software Support                      */
 /*                       SAM Software Package License                           */
 /* ---------------------------------------------------------------------------- */
-/* Copyright (c) %copyright_year%, Atmel Corporation                            */
+/* Copyright (c) %copyright_year%, Atmel Corporation                                        */
 /*                                                                              */
 /* All rights reserved.                                                         */
 /*                                                                              */
@@ -26,13 +26,6 @@
 /* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, */
 /* EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                           */
 /* ---------------------------------------------------------------------------- */
-
-/*------------------------------------------------------------------------------
- *      Linker script for running in internal FLASH on the ATSAM4S
- *		Dependency: sam4s16c_flash.ld
- *		Edited by eva-electronics to add heap.
- *		eva-electronics.com
- *----------------------------------------------------------------------------*/
 
 /* Section Definitions */
 SECTIONS
@@ -118,25 +111,9 @@ SECTIONS
         . = ALIGN(4);
         _ebss = . ;
         _ezero = .;
-		_end = .;
     } > ram
-			
-	 /* heap section */
-    .heap (NOLOAD):
-    {
-		. = ALIGN(8);
-		 _sheap = . ;
-		 
-		_hsize = DEFINED(HEAP_SIZE) ? 
-		. + HEAP_SIZE	: 
-		ORIGIN(ram) + LENGTH(ram) - STACK_SIZE - . ;
-		. = _hsize;
-		
-		. = ALIGN(8);
-		 _eheap = . ;
-    } > ram		
-	
-     /* stack section */
+
+    /* stack section */
     .stack (NOLOAD):
     {
         . = ALIGN(8);
@@ -146,5 +123,6 @@ SECTIONS
         _estack = .;
     } > ram
 
+    . = ALIGN(4);
     _end = . ;
 }
