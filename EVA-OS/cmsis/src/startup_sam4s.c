@@ -29,6 +29,11 @@
 
 #include "sam4s.h"
 
+/* If NULL is not defined, define it */
+#ifndef NULL
+#define NULL 0
+#endif
+
 /* Initialize segments */
 extern uint32_t _sfixed;
 extern uint32_t _efixed;
