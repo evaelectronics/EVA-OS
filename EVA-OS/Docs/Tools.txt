@@ -1,2 +1,3 @@
 Used tools:
 	Atmel studio 6.1.2
+	Doxygen	http://www.stack.nl/~dimitri/doxygen/ [Tip of the day, doxygen can generate call-graphs (staticly) using graphviz ].

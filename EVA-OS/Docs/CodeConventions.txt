@@ -1,0 +1,19 @@
+/* Niet compleet en kan nog veranderd worden */
+
+
+Coding style K&R zoals hieronder wordt beschreven?(alleen macro's wel full caps, zodat je goed het verschil ziet met een functie [vindt ik, zo niet zeg het maar])
+We kunnen voor functies fooBar() doen, maar zoals in de link beneden staat ook foor_bar(), zeg maar wat jullie willen.
+http://www.cas.mcmaster.ca/~carette/SE3M04/2004/slides/CCodingStyle.html
+
+- 	Maak functies die alleen lokaal gebruikt worden static [ Doen jullie waarschijnlijk al, zeg het alleen als reminder ]
+
+- 	Voor inline functies kan je macro's gebruiken of inline. inline is veiliger 
+	vergeet niet always_inline, anders maakt de optimizer het waarschijnlijk ongedaan).
+	http://gcc.gnu.org/onlinedocs/gcc/Inline.html
+	
+	
+	
+
+Doxygen gebruiken:
+http://www.stack.nl/~dimitri/doxygen/manual/docblocks.html
+

@@ -9,8 +9,11 @@
 #ifndef CODECONVENTIONS_H_
 #define CODECONVENTIONS_H_
 
-void executeFunction(void * function)
-void print(char * something);
+/*! \brief	Brief description */
+#define FOO	0
+
+void executeFunction(void (*function)(arg1, arg2));
+void print(char *something);
 char returnChar(char c);
 
 
