@@ -9,7 +9,8 @@
 #ifndef USART_H_
 #define USART_H_
 
-
+void initUsart(Usart * _usart, uint8_t _id);
+extern void initInterupt();
 
 
 
