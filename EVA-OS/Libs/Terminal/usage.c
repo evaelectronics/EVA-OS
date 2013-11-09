@@ -24,7 +24,7 @@
  *
  * \return Unused (ANSI-C compatibility).
  */
-int /*terminal_*/main(void) //comment "terminal_" to see the magic happen.
+int terminal_main(void) //comment "terminal_" to see the magic happen.
 {			
     /* Initialize the SAM system */
 	SystemInit();
