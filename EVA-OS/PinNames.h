@@ -9,7 +9,7 @@
 #ifndef PINNAMES_H_
 #define PINNAMES_H_
 
-#include "sam.h"
+#include <sam4s.h>
 
 #define CHARGE_ENABLE_PIN	(1<<0) 		/**< \brief  Pin that Enables Li-Po charging	OUTPUT	ACTIVE HIGH*/
 #define CHARGE_ENABLE_PORT	PIOA		/**< \brief  Port used by Corresponding Pin('s)*/
@@ -81,7 +81,7 @@
 #define LCD_RD_PIN			(1<<8)		/**< \brief  Pin that provides the read signal for the LCD module	OUTPUT	ACTIVE LOW*/
 #define LCD_WR_PIN			(1<<9)		/**< \brief  Pin that provides the write signal for the LCD module	OUTPUT	ACTIVE LOW*/
 #define LCD_RS_PIN			(1<<10)		/**< \brief  Pin that provides the register select signal for the LCD module	OUTPUT	LOW = WRITE COMMAND HIGH = WRITE DATA*/
-#define LCD_CS_PIN			(1<<11)		/**< \brief  Pin that provides the read signal for the LCD module	OUTPUT	ACTIVE LOW*/
+#define LCD_CS_PIN			(1<<11)		/**< \brief  Pin that provides the chip select signal for the LCD module	OUTPUT	ACTIVE LOW*/
 #define LCD_RESET_PIN		(1<<12)		/**< \brief  Pin that provides a reset signal for the LCD module	OUTPUT	ACTIVE LOW*/
 #define LCD_DATA_PORT		PIOC		/**< \brief  Port used by Corresponding Pin('s)*/
 #define BATT_VOLTAGE_PIN	(1<<13)		/**< \brief  Pin that receives the battery voltage divided by two	INPUT	ANALOG */
