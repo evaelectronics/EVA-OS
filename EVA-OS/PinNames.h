@@ -11,6 +11,8 @@
 
 #include <sam4s.h>
 
+#define F_CPU 120000000UL
+
 #define CHARGE_ENABLE_PIN	(1<<0) 		/**< \brief  Pin that Enables Li-Po charging	OUTPUT	ACTIVE HIGH*/
 #define CHARGE_ENABLE_PORT	PIOA		/**< \brief  Port used by Corresponding Pin('s)*/
 #define USB_CONNECTED_PIN	(1<<1)		/**< \brief  Pin that indicates a connected USB cable	INPUT	ACTIVE HIGH*/

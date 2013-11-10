@@ -5,19 +5,22 @@
  *  Author: Aran Dokoupil
  */ 
 
+
 #include <Display/display.h>
+#include <Graphical/graphical.h>
 #include <Terminal/terminal.h>
 #include <Terminal/system_font.h>
+
  
  /*! \brief Initializes the terminal for use.
  *	
  *	rewrites the screen buffer with the background colour and refreshes the screen
  *  			       
  */
-void terminal_init(){	
+void terminal_init(struct RGBcolour *colour){	
 	for(uint8_t x = 0; x < WIDTH; x++){ //for the height
 		for(uint8_t y = 0; y < HEIGHT; y++){ //and width of the screen
-			display_writePixel(x,y,BACKGROUNDCOLOR); //write the background colour
+			graphical_writePixel(x,y,colour); //write the background colour
 		}
 	}
 	display_screenRefresh();
@@ -35,13 +38,13 @@ void terminal_shiftUpDisplay(uint8_t pixels){
 	for(uint8_t x = 0; x < WIDTH; x++){	//shifts all the pixels from top to bottom-pixels
 		for (uint8_t y = 0; y < HEIGHT-pixels; y++)
 		{
-			display_copyPixel(x, y, x, y+pixels);
+			graphical_copyPixel(x, y, x, y+pixels);
 		}
 	}
 	for(uint8_t x = 0; x < WIDTH; x++){ //sets the remaining unwritten pixels to the background colour
 		for (uint8_t y = HEIGHT-pixels; y < HEIGHT; y++)
 		{
-			display_writePixel(x,y,BACKGROUNDCOLOR);
+			graphical_writePixel(x,y,display_createRGBColour(BACKGROUNDCOLOR));
 		}
 	}	
 }
@@ -54,7 +57,7 @@ void terminal_shiftUpDisplay(uint8_t pixels){
  *	\param	red,green,blue The RGB colour that the character will be printed in.
  *		       
  */
-void terminal_placeFormatedLetter(char letter, uint8_t red, uint8_t green, uint8_t blue){		
+void terminal_placeFormatedLetter(char letter, struct RGBcolour *colour){		
 		
 	static uint8_t pixelCursorXPos = EDGEDISTANCE; //position for new characters in pixels
 	static uint8_t pixelCursorYPos = EDGEDISTANCE+5; //position for new characters in pixels
@@ -84,7 +87,7 @@ void terminal_placeFormatedLetter(char letter, uint8_t red, uint8_t green, uint8
 		for(uint8_t row = 0; row < SPACINGINDEX; row++){ //for the height of the character			
 			for(uint8_t colum = 0; colum < systemFont[letter-ASCIIFONTSTART][SPACINGINDEX]; colum++){ // and the width of the character
 				if(systemFont[letter-ASCIIFONTSTART][row] & (1<<colum)){ //if the bit on the row-colum place is high
-					display_writePixel(pixelCursorXPos-colum, pixelCursorYPos+row, red, green, blue); //draw a pixel on that row-colum in the specified colour
+					graphical_writePixel(pixelCursorXPos-colum, pixelCursorYPos+row, colour); //draw a pixel on that row-colum in the specified colour
 				}		
 			}
 		}

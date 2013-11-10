@@ -10,6 +10,7 @@
 #define TERMINAL_H_
 
 #include <stdio.h>
+#include <Graphical/graphical.h>
 
 #define LINESIZE 11	/**< \brief height of a letter + one pixel clearance*/
 #define EDGEDISTANCE 1	/**< \brief distance from the edge to the screen to the first pixel of a letter*/
@@ -24,12 +25,8 @@
 
 /*Prototypes*/
 void terminal_init();
-void terminal_addString(char *text, uint8_t textLength, uint8_t line, uint8_t red, uint8_t green, uint8_t blue);
-void terminal_addLetterPos(char letter, uint8_t x, uint8_t y, uint8_t red, uint8_t green, uint8_t blue);
 void terminal_shiftUpDisplay(uint8_t pixels);
-void terminal_clearLine(uint8_t line, uint8_t red, uint8_t green, uint8_t blue);
-void terminal_redrawAllText();
 int terminal_placeFormatedLetter_printf(char letter);
-void terminal_placeFormatedLetter(char letter, uint8_t red, uint8_t green, uint8_t blue);
+void terminal_placeFormatedLetter(char letter, struct RGBcolour *colour);
 
 #endif /* TERMINAL_H_ */

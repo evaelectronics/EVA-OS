@@ -76,7 +76,7 @@ extern "C" {
  */
 #ifndef F_CPU
 #		warning "F_CPU not defined for delay.h    F_CPU set to 120Mhz"
-#       define F_CPU 160000000UL
+#       define F_CPU 120000000UL
 #endif
 
 /**

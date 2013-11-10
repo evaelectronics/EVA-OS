@@ -7,11 +7,14 @@
 
 
 #include <sam4s.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <Display/display.h>
 #include <Display/display_registers.h>
 #include <Display/display_mask.h>
 #include <PinNames.h>
 #include <Delay/delay.h>
+#include <Graphical/graphical.h>
 
 /*prototypes*/
 static inline void display_quickWriteByte(uint8_t data)__attribute__((always_inline));
@@ -20,13 +23,9 @@ static inline void display_writeMode() __attribute__((always_inline));
 static inline void display_writeCommand(uint8_t data) __attribute__((always_inline));
 
 static inline void display_writeByte(uint8_t data) __attribute__((always_inline));
-static inline void display_set_state(uint8_t state) __attribute__((always_inline));
-static inline void display_set_sleep(uint8_t sleep) __attribute__((always_inline));
-static inline void display_set_MAC(uint8_t macData) __attribute__((always_inline));
 static inline void display_enable_extended_command() __attribute__((always_inline));
 
 
-uint8_t frame[WIDTH][HEIGHT][COLOUR];//the main on-chip buffer that contains realtime screen data
 
  /*! \brief Sends a byte over the LCD bus and clocks it in.
  *	
@@ -79,7 +78,7 @@ static inline void display_writeByte(uint8_t data){
  *			       
  */
 
-static inline  void display_set_state(uint8_t state){
+void display_set_state(uint8_t state){
 	display_writeCommand(DISPOFF|(state && 1));	//write the on/off command
 }
 
@@ -89,8 +88,17 @@ static inline  void display_set_state(uint8_t state){
  *	\param sleep Sets the display in sleep mode if zero, wakes up the display if not zero 
  *			       
  */
-static inline void display_set_sleep(uint8_t sleep){
+void display_set_sleep(uint8_t sleep){
 	display_writeCommand(SLPIN|!(sleep && 1)); //write the sleep command
+}
+
+ /*! \brief sends a ramWrite command
+ *
+ *  ramWrite initializes the display to receive a framebuffer of data.
+ *		       
+ */
+void display_ramWrite(){
+	display_writeCommand(RAMWR); //write the ramWrite command;
 }
 
 
@@ -101,7 +109,7 @@ static inline void display_set_sleep(uint8_t sleep){
  *	\param macData the macdata to be send
  *			       
  */
-static inline void display_set_MAC(uint8_t macData){
+void display_set_MAC(uint8_t macData){
 	display_writeCommand(MADCTL); //send the macdata instruction
 	display_writeByte(macData);// and sends the mac data
 }
@@ -118,35 +126,6 @@ static inline void display_enable_extended_command(){
 		display_writeByte(SETEXTC_PARAM2);	//otherwise extended command won't be enabled 
 		display_writeByte(SETEXTC_PARAM3);
 }
-
-
- /*! \brief Writes a single pixel to the screen buffer
- *	
- *	writes the red green and blue values of a specified pixel in the screen buffer which can then be send to the display
- *  
- *	\param 	x,y The X and Y positions of the pixel to be written
- *	\param	red,green,blue The RGB colour that the pixel will appear in
- *		       
- */
-void display_writePixel(uint8_t x, uint8_t y, uint8_t red, uint8_t green, uint8_t blue){
-	frame[x][y][RED] = red; //writes the red value
-	frame[x][y][GREEN] = green; //writes the green value
-	frame[x][y][BLUE] = blue; //writes the blue value
-}
-
-
-/*! \brief copies the second pixel and overwrites the first with the seconds data	
- *  
- *	\param 	firstX,firstY The coordinates of the pixel to be replaced
- *	\param	secondX, secondY The coordinated of the pixel that should be copied 
- *		       
- */
-void display_copyPixel(uint8_t firstX, uint8_t firstY, uint8_t secondX, uint8_t secondY){
-	frame[firstX][firstY][RED] = frame[secondX][secondY][RED]; //copies the red pixel value
-	frame[firstX][firstY][GREEN] = frame[secondX][secondY][GREEN];//copies the green pixel value
-	frame[firstX][firstY][BLUE] = frame[secondX][secondY][BLUE];//copies the blue pixel value
-}
-
 
  /*! \brief Initializes the display for use with the microcontroller 
  *	
@@ -194,23 +173,6 @@ void display_init(){
 }
 
 
-/*! \brief refreshes the screen buffer to the display
- *	
- *	writes <b>all</b> the data of the screen buffer to the display to make the screen buffer viable to the outside world
- *  		       
- */
-void display_screenRefresh(){
-	display_writeCommand(RAMWR); //writes the RAMwrite command to the display
-	for(int x = WIDTH-1; x >= 0; x--){
-		for(int y = 0; y < HEIGHT; y++){ //and proceed to write the content of the frame buffer to the display
-			display_quickWriteByte(frame[x][y][RED]);
-			display_quickWriteByte(frame[x][y][GREEN]);
-			display_quickWriteByte(frame[x][y][BLUE]);
-		}
-	}
-}
-
-
 /*! \brief sets the LCD bus in read mode 
  *	
  *	set's the IO's that interface with the LCD as input's and changes the control signals to specify the bus direction
@@ -232,4 +194,21 @@ static inline void display_writeMode(){
 	RD_HI(); //tel the display that the bus is an output
 	WR_LO();
 	LCD_DATA_PORT->PIO_OER = LCD_BUS; //set IO's to output
+}
+
+
+/*! \brief refreshes the screen buffer to the display
+ *	
+ *	writes <b>all</b> the data of the screen buffer to the display to make the screen buffer viable to the outside world
+ *  		       
+ */
+void display_screenRefresh(){
+	display_ramWrite(); //enter ramwrite mode
+	for(int x = WIDTH-1; x >= 0; x--){
+		for(int y = 0; y < HEIGHT; y++){ //and proceed to write the content of the frame buffer to the display
+			display_quickWriteByte(screenBuffer[x][y].red);
+			display_quickWriteByte(screenBuffer[x][y].green);
+			display_quickWriteByte(screenBuffer[x][y].blue);
+		}
+	}
 }

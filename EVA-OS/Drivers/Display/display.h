@@ -37,15 +37,13 @@
 #define WIDTH 160 /**< \brief  Specifies the width of the display*/
 #define COLOUR 3 /**< \brief Specifies the amount of coloured sub pixels the display has */
 
-#define RED 0 /**< \brief Specifies the index of the screen buffer where <b>red</b> is stored */
-#define GREEN 1 /**< \brief Specifies the index of the screen buffer where <b>green</b> is stored */
-#define BLUE 2 /**< \brief Specifies the index of the screen buffer where <b>blue</b> is stored */
-
 
 /*prototypes*/
-void display_writePixel(uint8_t x, uint8_t y, uint8_t red, uint8_t green, uint8_t blue);
 void display_init();
+void display_ramWrite();
+void display_set_state(uint8_t state);
+void display_set_sleep(uint8_t sleep);
+void display_set_MAC(uint8_t macData);
 void display_screenRefresh();
-void display_copyPixel(uint8_t firstX, uint8_t firstY, uint8_t secondX, uint8_t secondY);
 
 #endif /* DISPLAY_H_ */

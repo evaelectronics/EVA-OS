@@ -32,45 +32,45 @@ int terminal_main(void) //comment "terminal_" to see the magic happen.
  	pinDefinitions(); //set IO pins in correct state
  	display_init();	 //initialize the display
 	terminal_init(); //initialize the terminal
-
+	struct RGBcolour *colour = display_createRGBColour(TEXTCOLOR);
     while(1){		
-		terminal_placeFormatedLetter('H',TEXTCOLOR); //place a H
+		terminal_placeFormatedLetter('H',colour); //place a H
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('e',TEXTCOLOR); //place a e
+		terminal_placeFormatedLetter('e',colour); //place a e
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('l',TEXTCOLOR); //place a l
+		terminal_placeFormatedLetter('l',colour); //place a l
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('l',TEXTCOLOR); //place a l
+		terminal_placeFormatedLetter('l',colour); //place a l
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('o',TEXTCOLOR); //place a o
+		terminal_placeFormatedLetter('o',colour); //place a o
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter(' ',TEXTCOLOR); //place a  
+		terminal_placeFormatedLetter(' ',colour); //place a
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('W',TEXTCOLOR); //place a W
+		terminal_placeFormatedLetter('w',colour); //place a W
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('o',TEXTCOLOR); //place a o
+		terminal_placeFormatedLetter('o',colour); //place a o
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('r',TEXTCOLOR); //place a r
+		terminal_placeFormatedLetter('r',colour); //place a r
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('l',TEXTCOLOR); //place a l
+		terminal_placeFormatedLetter('l',colour); //place a l
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('d',TEXTCOLOR); //place a d
+		terminal_placeFormatedLetter('d',colour); //place a d
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter('!',TEXTCOLOR); //place a !
+		terminal_placeFormatedLetter('!',colour); //place a !
 		display_screenRefresh();					 //make it visible
 		delay_ms(LETTER_DELAY);						 //wait a moment to take it all in
-		terminal_placeFormatedLetter(' ',TEXTCOLOR); //place a 		
+		terminal_placeFormatedLetter(' ',colour); //place a 		
 		display_screenRefresh();					  //make it visible
 		delay_ms(LETTER_DELAY);						  //wait a moment to take it all in
 		delay_ms(LETTER_DELAY);						  //wait an additional moment to take it aaaaaallll in
