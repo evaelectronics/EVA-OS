@@ -14,7 +14,7 @@
  *
  * \return Unused (ANSI-C compatibility).
  */
-int main(void)
+int led_main(void)
 {	
 	/* Initialize the SAM system */
 	SystemInit();
