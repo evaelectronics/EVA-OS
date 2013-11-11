@@ -4,6 +4,7 @@
  * Created: 9-11-2013 1:26:43
  *  Author: Aran Dokoupil
  */ 
+
 /********************************************************************************************************************************************************/       
 /*				a quick demo to show the functions of the terminal, due to hardware constraints there is no initialization of the back light			*/
 /*									the back light should be enabled separately be it in hardware or in software.										*/
@@ -32,7 +33,8 @@ int terminal_main(void) //comment "terminal_" to see the magic happen.
  	pinDefinitions(); //set IO pins in correct state
  	display_init();	 //initialize the display
 	terminal_init(); //initialize the terminal
-	struct RGBcolour *colour = display_createRGBColour(TEXTCOLOR);
+	struct RGBcolour *colour = graphical_createRGBColour(TEXTCOLOR);
+	graphical_drawCircle(80,64,50,1,CYAN);
     while(1){		
 		terminal_placeFormatedLetter('H',colour); //place a H
 		display_screenRefresh();					 //make it visible

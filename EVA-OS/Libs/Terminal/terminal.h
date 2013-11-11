@@ -25,6 +25,7 @@
 
 /*Prototypes*/
 void terminal_init();
+void terminal_putc(struct RGBcolour *p, char letter);
 void terminal_shiftUpDisplay(uint8_t pixels);
 int terminal_placeFormatedLetter_printf(char letter);
 void terminal_placeFormatedLetter(char letter, struct RGBcolour *colour);

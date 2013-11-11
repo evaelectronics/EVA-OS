@@ -21,14 +21,14 @@
  *
  * \return Unused (ANSI-C compatibility).
  */
-int main(void)
+int grapical_main(void)
 {	
 	struct RGBcolour* colourLookup[7] = {RED, GREEN, BLUE, CYAN, MAGNETA, YELLOW, WHITE};
-	uint8_t centerX = 10;
-	uint8_t centerY = 10;
-	int8_t slopeY = 2;
-	int8_t slopeX = 2;
-	uint8_t colourIndex = 0;
+	uint8_t centerX = 14;
+	uint8_t centerY = 22;
+	int8_t slopeY = 1;
+	int8_t slopeX = 1;
+	uint8_t colourIndex[4] = {0,1,2,3};
     /* Initialize the SAM system */
 	SystemInit();
 	WDT->WDT_MR = WDT_MR_WDDIS; //disable watchdog
@@ -47,31 +47,59 @@ int main(void)
     while(1){
 		
 		for(int j = 0; j < 1; j++){
-			for(int i = 150; i >= 10; i-= 10){
-				graphical_drawLine(centerX,centerY,i,10,colourLookup[(colourIndex)%7]);
+			for(int i = 150; i >= 10; i-= 1){
+				graphical_drawLine(centerX,centerY,i,10,colourLookup[colourIndex[0]]);
 			}
-			for(int i = 10; i <= 118; i+= 10){
-				graphical_drawLine(centerX,centerY,10,i,colourLookup[(colourIndex+1)%7]);
+			for(int i = 10; i <= 118; i+= 1){
+				graphical_drawLine(centerX,centerY,10,i,colourLookup[colourIndex[1]]);
 			}
-			for(int i = 10; i <= 150; i+= 10){
-				graphical_drawLine(centerX,centerY,i,118,colourLookup[(colourIndex+2)%7]);
+			for(int i = 10; i <= 150; i+= 1){
+				graphical_drawLine(centerX,centerY,i,118,colourLookup[colourIndex[2]]);
 			}
-			for(int i = 118; i >= 10; i-= 10){
-				graphical_drawLine(centerX,centerY,150,i,colourLookup[(colourIndex+3)%7]);
+			for(int i = 118; i >= 10; i-= 1){
+				graphical_drawLine(centerX,centerY,150,i,colourLookup[colourIndex[3]]);
 			}
 			display_screenRefresh();
 		}
-		delay_ms(MOVEMENTSPEED);
-		graphical_init(BLACK);
+		//delay_ms(MOVEMENTSPEED);
+		//graphical_init(BLACK);
 		centerX += slopeX;
-		if(centerX < 10 || centerX > WIDTH-10){
+		if(centerX < 10){
 			slopeX = -slopeX;
-			colourIndex++;			
+			colourIndex[1]++;
+			colourIndex[1] = colourIndex[1] %7;
+			while(colourIndex[1] == colourIndex[0]||colourIndex[1] == colourIndex[2]||colourIndex[1] == colourIndex[3]){
+				colourIndex[1]++;
+				colourIndex[1] = colourIndex[1] %7;
+			}		
+		}
+		if(centerX > WIDTH-10){
+			slopeX = -slopeX;
+			colourIndex[3]++;
+			colourIndex[3] = colourIndex[3] %7;
+			while(colourIndex[3] == colourIndex[1]||colourIndex[3] == colourIndex[2]||colourIndex[3] == colourIndex[0]){
+				colourIndex[3]++;
+				colourIndex[3] = colourIndex[3] %7;
+			}
 		}
 		centerY += slopeY;
-		if(centerY < 10 || centerY > HEIGHT-10){
+		if(centerY < 10){
 			slopeY = -slopeY;
-			colourIndex++;
+			colourIndex[0]++;
+			colourIndex[0] = colourIndex[0] %7;
+			while(colourIndex[0] == colourIndex[1]||colourIndex[0] == colourIndex[2]||colourIndex[0] == colourIndex[3]){
+				colourIndex[0]++;
+				colourIndex[0] = colourIndex[0] %7;
+			}
+		}
+		if(centerY > HEIGHT-10){
+			slopeY = -slopeY;
+			colourIndex[2]++;
+			colourIndex[2] = colourIndex[2] %7;
+			while(colourIndex[2] == colourIndex[1]||colourIndex[2] == colourIndex[0]||colourIndex[2] == colourIndex[3]){
+				colourIndex[2]++;
+				colourIndex[2] = colourIndex[2] %7;
+			}
 		}
     }
 }

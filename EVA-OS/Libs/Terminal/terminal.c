@@ -10,17 +10,21 @@
 #include <Graphical/graphical.h>
 #include <Terminal/terminal.h>
 #include <Terminal/system_font.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
+struct RGBcolour *backgroundColour; //default background colour, gets defined when initialized 
  
  /*! \brief Initializes the terminal for use.
  *	
  *	rewrites the screen buffer with the background colour and refreshes the screen
  *  			       
  */
-void terminal_init(struct RGBcolour *colour){	
+void terminal_init(struct RGBcolour *colour){
+	backgroundColour = colour;	
 	for(uint8_t x = 0; x < WIDTH; x++){ //for the height
 		for(uint8_t y = 0; y < HEIGHT; y++){ //and width of the screen
-			graphical_writePixel(x,y,colour); //write the background colour
+			graphical_writePixel(x,y,backgroundColour); //write the background colour
 		}
 	}
 	display_screenRefresh();
@@ -44,9 +48,13 @@ void terminal_shiftUpDisplay(uint8_t pixels){
 	for(uint8_t x = 0; x < WIDTH; x++){ //sets the remaining unwritten pixels to the background colour
 		for (uint8_t y = HEIGHT-pixels; y < HEIGHT; y++)
 		{
-			graphical_writePixel(x,y,display_createRGBColour(BACKGROUNDCOLOR));
+			graphical_writePixel(x,y,backgroundColour);
 		}
 	}	
+}
+
+void terminal_putc(struct RGBcolour *p, char letter){	
+	terminal_placeFormatedLetter(letter, p);	
 }
 
  /*! \brief Places a letter that format's itself on the screen
@@ -92,6 +100,40 @@ void terminal_placeFormatedLetter(char letter, struct RGBcolour *colour){
 			}
 		}
 	}
+}
+
+int _write(void *reent, int fd, char *prt, size_t len)
+{
+	size_t i;
+	for(i=0; i<len; i++){
+		terminal_placeFormatedLetter((*prt),WHITE);
+	}
+	return len;
+}
+
+int _close(int file) {
+	return 0;
+}
+
+int _isatty(int file) {
+	return 1;
+}
+
+int _lseek(int file, int ptr, int dir) {
+	return 0;
+}
+
+int _open(const char *name, int flags, int mode) {
+	return -1;
+}
+
+int _read(int file, char *ptr, int len) {
+	return 0;
+}
+
+int _fstat(int file, struct stat *st) {
+	st->st_mode = S_IFCHR;
+	return 0;
 }
 
 
