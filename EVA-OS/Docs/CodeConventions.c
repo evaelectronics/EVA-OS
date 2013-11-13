@@ -32,11 +32,13 @@ void print(char *something)
 
 void executeFunction(void (*function)(arg1, arg2))
 {
+	int x,y;
 	(*function)(x, y);
 }
 
 static int foo(void)
 {
+	int bar = 0;
 	return bar;
 }
 

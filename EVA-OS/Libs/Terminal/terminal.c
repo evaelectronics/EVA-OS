@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-struct RGBcolour *backgroundColour; //default background colour, gets defined when initialized 
+struct RGBcolour *terminal_backgroundColour; //default background colour, gets defined when initialized 
  
  /*! \brief Initializes the terminal for use.
  *	
@@ -21,10 +21,10 @@ struct RGBcolour *backgroundColour; //default background colour, gets defined wh
  *  			       
  */
 void terminal_init(struct RGBcolour *colour){
-	backgroundColour = colour;	
+	terminal_backgroundColour = colour;	
 	for(uint8_t x = 0; x < WIDTH; x++){ //for the height
 		for(uint8_t y = 0; y < HEIGHT; y++){ //and width of the screen
-			graphical_writePixel(x,y,backgroundColour); //write the background colour
+			graphical_writePixel(x,y,terminal_backgroundColour); //write the background colour
 		}
 	}
 	display_screenRefresh();
@@ -48,13 +48,22 @@ void terminal_shiftUpDisplay(uint8_t pixels){
 	for(uint8_t x = 0; x < WIDTH; x++){ //sets the remaining unwritten pixels to the background colour
 		for (uint8_t y = HEIGHT-pixels; y < HEIGHT; y++)
 		{
-			graphical_writePixel(x,y,backgroundColour);
+			graphical_writePixel(x,y,terminal_backgroundColour);
 		}
 	}	
 }
 
-void terminal_putc(struct RGBcolour *p, char letter){	
-	terminal_placeFormatedLetter(letter, p);	
+
+ /*! \brief Function used to call placeFormatedLetter so that it can be used by printf
+ *	
+ *	This function also casts the void pointer to the RGBcolour pointer since that is what placeformatedletter expects.
+ *
+ *	\param 	p Void pointer that contains the RGBcolour of the char that has to be printed
+ *	\param	letter The character that appears on the screen
+ *		       
+ */
+void terminal_putc(void *p, char letter){		
+	terminal_placeFormatedLetter(letter, (struct RGBcolour*) p);	
 }
 
  /*! \brief Places a letter that format's itself on the screen

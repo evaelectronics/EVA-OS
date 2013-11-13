@@ -35,7 +35,7 @@ int printf_main(void)
 	WDT->WDT_MR = WDT_MR_WDDIS; //disable watchdog
  	pinDefinitions();
  	display_init(); //initialize the display
-	init_printf(NULL, terminal_putc); //initialize printf, use NULL and terminal_putc to print to the display.
+	printf_init(NULL, terminal_putc); //initialize printf, use NULL and terminal_putc to print to the display.
 	terminal_init(BLACK);	//initialize the terminal, parameter is the background colour, use standard colours or define own by using graphical_createRGBColour(red,green,blue);
 	
 	printf("Hello world!\n");//print a basic string to the screen, printf automatically refreshes the screen and the default font colour is white.

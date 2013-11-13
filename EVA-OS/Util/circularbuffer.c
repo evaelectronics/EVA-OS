@@ -25,7 +25,7 @@ int8_t circularBuffer_writeByte(CircularBuffer * buffer, char data){
 	buffer->data[buffer->head-1] = data;
 	if (buffer->head == buffer->size) {
 		buffer->head = 1;
-		} else {
+	} else {
 		buffer->head++;
 	}
 	return 1;
