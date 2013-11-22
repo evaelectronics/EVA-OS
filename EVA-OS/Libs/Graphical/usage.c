@@ -13,7 +13,9 @@
 #include <Graphical/graphical.h>
 
 
+
 #define MOVEMENTSPEED 10
+#define COLOURAMOUNT 8
 
 
 /**
@@ -23,10 +25,10 @@
  */
 int grapical_main(void)
 {	
-	struct RGBcolour* colourLookup[7] = {RED, GREEN, BLUE, CYAN, MAGNETA, YELLOW, WHITE};
+	struct RGBcolour* colourLookup[] = {RED, GREEN, BLUE, CYAN, MAGNETA, YELLOW, WHITE, graphical_createRGBColour(104,13,200)};
 	uint8_t centerX = 14;
 	uint8_t centerY = 22;
-	int8_t slopeY = 1;
+	int8_t slopeY = 2;
 	int8_t slopeX = 1;
 	uint8_t colourIndex[4] = {0,1,2,3};
     /* Initialize the SAM system */
@@ -47,39 +49,39 @@ int grapical_main(void)
     while(1){
 		
 		for(int j = 0; j < 1; j++){
-			for(int i = 150; i >= 10; i-= 1){
+			for(int i = 150; i >= 10; i-= 10){
 				graphical_drawLine(centerX,centerY,i,10,colourLookup[colourIndex[0]]);
 			}
-			for(int i = 10; i <= 118; i+= 1){
+			for(int i = 10; i <= 118; i+= 10){
 				graphical_drawLine(centerX,centerY,10,i,colourLookup[colourIndex[1]]);
 			}
-			for(int i = 10; i <= 150; i+= 1){
+			for(int i = 10; i <= 150; i+= 10){
 				graphical_drawLine(centerX,centerY,i,118,colourLookup[colourIndex[2]]);
 			}
-			for(int i = 118; i >= 10; i-= 1){
+			for(int i = 118; i >= 10; i-= 10){
 				graphical_drawLine(centerX,centerY,150,i,colourLookup[colourIndex[3]]);
 			}
 			display_screenRefresh();
 		}
 		//delay_ms(MOVEMENTSPEED);
-		//graphical_init(BLACK);
+		graphical_init(BLACK);
 		centerX += slopeX;
 		if(centerX < 10){
 			slopeX = -slopeX;
 			colourIndex[1]++;
-			colourIndex[1] = colourIndex[1] %7;
+			colourIndex[1] = colourIndex[1] % COLOURAMOUNT;
 			while(colourIndex[1] == colourIndex[0]||colourIndex[1] == colourIndex[2]||colourIndex[1] == colourIndex[3]){
 				colourIndex[1]++;
-				colourIndex[1] = colourIndex[1] %7;
+				colourIndex[1] = colourIndex[1] % COLOURAMOUNT;
 			}		
 		}
 		if(centerX > WIDTH-10){
 			slopeX = -slopeX;
 			colourIndex[3]++;
-			colourIndex[3] = colourIndex[3] %7;
+			colourIndex[3] = colourIndex[3] % COLOURAMOUNT;
 			while(colourIndex[3] == colourIndex[1]||colourIndex[3] == colourIndex[2]||colourIndex[3] == colourIndex[0]){
 				colourIndex[3]++;
-				colourIndex[3] = colourIndex[3] %7;
+				colourIndex[3] = colourIndex[3] % COLOURAMOUNT;
 			}
 		}
 		centerY += slopeY;
@@ -95,10 +97,10 @@ int grapical_main(void)
 		if(centerY > HEIGHT-10){
 			slopeY = -slopeY;
 			colourIndex[2]++;
-			colourIndex[2] = colourIndex[2] %7;
+			colourIndex[2] = colourIndex[2] % COLOURAMOUNT;
 			while(colourIndex[2] == colourIndex[1]||colourIndex[2] == colourIndex[0]||colourIndex[2] == colourIndex[3]){
 				colourIndex[2]++;
-				colourIndex[2] = colourIndex[2] %7;
+				colourIndex[2] = colourIndex[2] % COLOURAMOUNT;
 			}
 		}
     }
