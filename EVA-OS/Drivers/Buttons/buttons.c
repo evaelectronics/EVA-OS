@@ -10,6 +10,7 @@
 
 void button_init()
 {
+	PMC->PMC_PCER0 |= (1<<13);
 	PIOC->PIO_WPMR = 0x50494F;
 	buttons[BUTTONS_LEFT] = &button_left;
 	buttons[BUTTONS_LEFT]->pin = BUTTON_1_PIN;

@@ -11,10 +11,12 @@
 
 #include <sam4s.h>
 #include <Util/Time/time.h>
+#include <PinNames.h>
 #include <stdlib.h>
 
 uint8_t toDec(uint8_t bcd);
 uint8_t toBcd(uint8_t number);
+void system_init();
 
 
 

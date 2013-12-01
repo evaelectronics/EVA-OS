@@ -7,6 +7,9 @@
 
 #include <System/systemservice.h>
 
+void system_init(void)
+{
+}
 
 uint8_t toBcd(uint8_t number)
 {
