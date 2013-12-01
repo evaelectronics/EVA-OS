@@ -7,6 +7,7 @@
 
 #include <Drivers/Buttons/buttons.h>
 #include <Util/TinyPrintf/printf.h>
+
 void button_init()
 {
 	PIOC->PIO_WPMR = 0x50494F;

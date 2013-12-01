@@ -9,7 +9,6 @@
 #ifndef BUTTONS_H_
 #define BUTTONS_H_
 
-#include <Drivers/Buttons/button.h>
 #include <PinNames.h>
 #include <sam4s.h>
 
