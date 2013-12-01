@@ -15,6 +15,7 @@ typedef enum{
 
 void polExample()
 {
+	button_init();
 	printf("Starting poll example");	
 	TestType testType = HOURS;
 	Time tempTime;

@@ -11,7 +11,7 @@ uint8_t circularBuffer_dataLeft(CircularBuffer * buffer) {
 }
 
 void circularBuffer_init(CircularBuffer * buffer){
-	buffer->size = bufferSize;						// from 0 til buffersize
+	buffer->size = 512;								// from 0 til buffersize
 	buffer->head = 1;								// Head always has to be 1 ahead of the tail
 	buffer->tail = 0;								// Read from the tail
 	for(uint8_t i = 0; i<buffer->size; i++){		// Resetting
