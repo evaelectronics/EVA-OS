@@ -16,6 +16,7 @@
 typedef struct GameDetails GameDetails;
 typedef struct Entity Entity;
 typedef struct BaseGame BaseGame;
+typedef struct EntityManager EntityManager;
 
 struct Entity{
 	uint16_t xPos;
@@ -29,7 +30,7 @@ struct Entity{
 };
 
 struct EntityList{
-	uint16_t size;	
+	uint8_t remove;
 	Entity * entity;
 	struct EntityList * nextEntity;
 };
@@ -51,21 +52,32 @@ struct GameInput{
 
 struct BaseGame{
 	uint8_t active;
-	uint16_t entityId;
-	struct EntityList * entityListHead;
-	struct EntityList * entityListTail;
+	EntityManager * entityManager;
 	void (*updateSpeficific)(GameDetails *);
 	void (*drawSpecific)(GameDetails *);
 };
 
-struct BaseGame * currentGame;
-struct GameDetails * gameDetails;
+struct EntityManager{
+	uint16_t entityId;
+	uint16_t entitySize;
+	struct EntityList * entityListRoot;
+	struct EntityList * entityListEnd;
+	void (*updateEntities)(EntityManager *, GameDetails *);
+	uint8_t (*removeEntity)(EntityManager *, void * );
+	void (*addEntity)(EntityManager *, void *);
+	void * (*getEntity)(EntityManager *, uint16_t, uint16_t);
+	void (*clear)(EntityManager *);
+};
+
+BaseGame * currentGame;
+GameDetails * gameDetails;
 
 void game_init();
 void game_render();
+void game_removeEntity(void * entity);
 void game_loadGame(BaseGame * game);
 void game_addEntity(void * newEntity);
-Entity * game_createEntity();
-void game_removeEntity(uint16_t id);
+void game_setEntityManager(EntityManager * entityManager);
+EntityManager * game_getEntityManager();
 
 #endif /* GAME_H_ */

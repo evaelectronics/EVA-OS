@@ -205,7 +205,7 @@ static inline void display_writeMode(){
 void display_screenRefresh(){
 	display_ramWrite(); //enter ramwrite mode
 	for(int x = WIDTH-1; x >= 0; x--){
-		for(int y = 0; y < HEIGHT; y++){ //and proceed to write the content of the frame buffer to the display
+		for(int y = HEIGHT-1; y >= 0 ; y--){ //and proceed to write the content of the frame buffer to the display
 			display_quickWriteByte(screenBuffer[x][y].red);
 			display_quickWriteByte(screenBuffer[x][y].green);
 			display_quickWriteByte(screenBuffer[x][y].blue);

@@ -8,7 +8,7 @@
 #include <Libs/Graphical/graphical.h>
 
 static void updateGameDetails();
-static void updateEntities();
+static EntityManager * entityManager;
 
 void game_init()
 {
@@ -28,68 +28,33 @@ void game_render()
 	if(currentGame->drawSpecific != NULL)
 		currentGame->drawSpecific(gameDetails);
 		
-	updateEntities();
+	entityManager->updateEntities(entityManager, gameDetails);
 				
 	buttons_update();
 }
-
-static void updateEntities()
+EntityManager * game_getEntityManager()
 {
-	struct EntityList * currentEntityList;
-	currentEntityList = currentGame->entityListHead;
-	
-	while(currentEntityList->nextEntity != NULL) {
-		currentEntityList = currentEntityList->nextEntity;
-		if(currentEntityList->entity->update != NULL)
-			currentEntityList->entity->update(gameDetails, currentEntityList->entity, gameDetails->deltaT);
-		if(currentEntityList->entity->draw != NULL)
-			currentEntityList->entity->draw(gameDetails, currentEntityList->entity);
-	
-		if (currentEntityList->entity->alive == 0){
-			if(currentEntityList->entity->destructor!=NULL)
-				currentEntityList->entity->destructor(currentEntityList->entity);
-			//TODO removal code
-		}
-	}
+	return entityManager;
 }
 
-void game_removeEntity(uint16_t id)
+void game_setEntityManager(EntityManager * newEntityManager)
 {
-	struct EntityList * currentEntityList;
-	currentEntityList = currentGame->entityListHead;
-	while (currentEntityList->nextEntity!=NULL){
-		if(currentEntityList->entity->id == id){
-			//TODO removal code
-			return;
-		}
-	}
+	entityManager = newEntityManager;
+}
+
+void game_removeEntity(void * entity)
+{
+	entityManager->removeEntity(entityManager,entity);
 }
 
 void game_addEntity(void * newEntity)
 {
-	Entity * entity = (Entity *) newEntity;
-	struct EntityList * itterator = currentGame->entityListHead;
-	
-	while(itterator->nextEntity != NULL){
-		itterator = itterator->nextEntity;
-	}
-	
-	itterator->nextEntity = malloc(sizeof(struct EntityList));
-	itterator = itterator->nextEntity;
-	itterator->nextEntity = NULL;
-	entity->id = currentGame->entityId;
-	currentGame->entityId++;
-	itterator->entity = entity;
+	entityManager->addEntity(entityManager, newEntity);
 }
 
 void game_loadGame(BaseGame * game)
 {
 	currentGame = game;	
-	currentGame->entityListHead = malloc(sizeof(struct EntityList)); 
-	currentGame->entityListHead->entity = calloc(1, sizeof(Entity)); // dummy to show the start with
-	currentGame->entityListHead->nextEntity = NULL;
-	currentGame->entityListTail = currentGame->entityListHead;
-	currentGame->entityId = 0;
 	currentGame->active = 1;
 }
 
@@ -104,8 +69,7 @@ void game_stopGame()
 		currentGame->active = 0;
 	}
 	game_clearEntities();
-	free(currentGame->entityListTail);
-	free(currentGame->entityListHead);
+	//TODO remove entityManager
 	free(currentGame);
 }
 
