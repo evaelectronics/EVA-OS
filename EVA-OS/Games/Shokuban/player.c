@@ -8,13 +8,15 @@
 
 static void update(GameDetails * gameDetails, void * entity, uint16_t deltaT);
 static void draw(GameDetails * gameDetails, void * entity);
+static void move(int8_t deltaX, int8_t deltaY, Player * self);
 
-void * player_constructor(uint8_t x, uint8_t y)
+void * player_constructor(EntityManager * entityManager, uint8_t x, uint8_t y)
 {	
 	Player * player = (Player*) malloc(sizeof(Player));
 	player->entity.xPos = x;
 	player->entity.yPos = y;
 	player->moves = 0;
+	player->entityManager = entityManager;
 	player->entity.type = PLAYER_TYPE;
 	player->entity.destructor = NULL;
 	player->entity.update = update;
@@ -26,22 +28,44 @@ static void update(GameDetails * gameDetails, void * entity, uint16_t deltaT)
 {
 	Player * self = (Player *) entity;
 	if(gameDetails->gameInput->button_isTyped(BUTTONS_UP)){
-		self->entity.yPos+=8;
-		self->moves++;
+		move(0, 8,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_DOWN)){
-		self->entity.yPos-=8;
-		self->moves++;
+		move(0, -8,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_LEFT)){
-		self->entity.xPos-=8;
-		self->moves++;
+		move(-8, 0,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_RIGHT)){
-		self->entity.xPos+=8;
-		self->moves++;
+		move(8, 0,self);
 	}
-	/*
-	if(
-	
-	*/
+}
+
+static void move(int8_t deltaX, int8_t deltaY, Player * self)
+{
+	Entity * other = (Entity* )self->entityManager->getEntity(self->entityManager,self->entity.xPos+deltaX, self->entity.yPos+deltaY);
+	if(other == NULL){
+		self->entity.yPos+=deltaY;
+		self->entity.xPos+=deltaX;
+		self->moves++;
+	} else if(other->type == CRATE_TYPE){
+		Entity * crateOther = (Entity* )self->entityManager->getEntity(self->entityManager,other->xPos+deltaX, other->yPos+deltaY);
+		if(crateOther == NULL){
+			self->entity.yPos+=deltaY;
+			self->entity.xPos+=deltaX;
+			other->yPos+=deltaY;
+			other->xPos+=deltaX;
+			self->moves++;
+		}else if(crateOther->type == GAP_TYPE){
+			self->entity.yPos+=deltaY;
+			self->entity.xPos+=deltaX;
+			other->yPos+=deltaY;
+			other->xPos+=deltaX;
+			self->moves++;
+			self->victory(self);
+		}
+	} else if(other->type == GAP_TYPE){
+		self->entity.alive = 0;
+	}else{
+			//Cant move here
+	}
 }
 
 static void draw(GameDetails * gameDetails, void * entity)

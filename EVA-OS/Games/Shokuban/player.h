@@ -17,8 +17,10 @@ typedef struct Player Player;
 struct Player {
 	Entity entity;
 	uint8_t moves;	
+	EntityManager * entityManager;
+	void (*victory)(Player *);
 };
 
-void * player_constructor(uint8_t x, uint8_t y);
+void * player_constructor(EntityManager * entityManager, uint8_t x, uint8_t y);
 
 #endif /* PLAYER_H_ */

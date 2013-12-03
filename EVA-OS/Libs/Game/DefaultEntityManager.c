@@ -10,6 +10,7 @@
 static void updateEntities(EntityManager * entityManager, GameDetails * gameDetails);
 static void addEntity(EntityManager * entityManager, void * newEntity);
 static void * getEntity(EntityManager * entityManager, uint16_t x, uint16_t y);
+static void clear(EntityManager * entityManager);
 static uint8_t removeEntity(EntityManager * entityManager, void * oldEntity);
 
 
@@ -26,6 +27,7 @@ EntityManager * defaultManager_constructor(uint16_t maxSize)
 	entityManager->addEntity = addEntity;
 	entityManager->getEntity = getEntity;
 	entityManager->removeEntity = removeEntity;
+	entityManager->clear = clear;
 	return entityManager;
 }
 
@@ -51,16 +53,20 @@ static void updateEntities(EntityManager * entityManager, GameDetails * gameDeta
 
 static void addEntity(EntityManager * entityManager, void * newEntity)
 {
-	entityManager->entityListEnd->entity = newEntity;
+	Entity * entity = (Entity *) newEntity;
+	entity->alive = 1;
+	entity->id = entityManager->entityId;
+	entityManager->entityListEnd->entity = entity;
 	entityManager->entityListEnd->nextEntity = malloc(sizeof(struct EntityList));
 	entityManager->entityListEnd = entityManager->entityListEnd->nextEntity;
 	entityManager->entityListEnd->entity = NULL;
+	entityManager->entityId++;
 }
 
 static void * getEntity(EntityManager * entityManager, uint16_t x, uint16_t y)
 {
 	struct EntityList * currentNode = entityManager->entityListRoot;
-	while(currentNode->nextEntity != NULL){
+	while(currentNode->entity != NULL){
 		if(currentNode->entity->xPos == x && currentNode->entity->yPos == y){
 			return currentNode->entity;
 		}
@@ -83,7 +89,7 @@ static void clear(EntityManager * entityManager)
 		free(currentNode);
 		currentNode = tempNode;
 	}
-	entityManager->entityListRoot = malloc(sizeof(EntityList));
+	entityManager->entityListRoot = malloc(sizeof(struct EntityList));
 	entityManager->entityListRoot->entity = NULL;
 	entityManager->entityListEnd = entityManager->entityListRoot;
 }
