@@ -9,15 +9,15 @@
 #ifndef SOKUBAN_H_
 #define SOKUBAN_H_
 
-#include <libs/Game/DefaultEntityManager.h>
+#include <libs/Game/syncEntityManager.h>
 #include <libs/Game/game.h>
-#include <Games/Shokuban/box.h>
-#include <Games/Shokuban/gap.h>
-#include <Games/Shokuban/player.h>
-#include <Games/Shokuban/crate.h>
 #include <Games/Shokuban/map.h>
-#include <Games/Shokuban/types.h>
+#include <Games/Shokuban/entities/types.h>
+#include <Games/Shokuban/screens/sokobanMenu.h>
+#include <Games/Shokuban/screens/sokobanGame.h>
+#include <Games/Shokuban/screens/sokobanLevelMenu.h>
 
+uint8_t levelProgress;
 BaseGame * sokubanGame();
 
 #endif /* SOKUBAN_H_ */

@@ -9,10 +9,12 @@
 
 static void updateGameDetails();
 static EntityManager * entityManager;
+static Screen * nextScreen;
 
 void game_init()
 {
 	button_init();
+	nextScreen = NULL;
 	gameDetails = calloc(1, sizeof(GameDetails));
 	gameDetails->gameInput = malloc(sizeof(struct GameInput));
 	gameDetails->gameInput->button_isPressed = button_isPressed;
@@ -22,6 +24,15 @@ void game_init()
 void game_render()
 {
 	updateGameDetails();
+	
+	if(currentGame->screen != NULL) {
+		if(currentGame->screen->draw != NULL) {
+			currentGame->screen->draw(currentGame->screen, gameDetails);
+		}
+		if(currentGame->screen->update != NULL){
+			currentGame->screen->update(currentGame->screen, gameDetails);
+		}
+	}
 		
 	if(currentGame->updateSpeficific != NULL)
 		currentGame->updateSpeficific(gameDetails);
@@ -31,15 +42,33 @@ void game_render()
 	entityManager->updateEntities(entityManager, gameDetails);
 				
 	buttons_update();
+	
+	if(nextScreen != NULL){
+ 		if(currentGame->screen!=NULL){
+ 			if(currentGame->screen->dispose != NULL) {
+ 				currentGame->screen->dispose(currentGame->screen);
+ 			}
+ 		}
+ 		currentGame->screen = nextScreen;
+ 		if(currentGame->screen->create != NULL){
+ 			currentGame->screen->create();
+ 		}
+		nextScreen = NULL;
+	}
 }
 EntityManager * game_getEntityManager()
 {
 	return entityManager;
 }
 
-void game_setEntityManager(EntityManager * newEntityManager)
+void game_setEntityManager(void * newEntityManager)
+{	
+	entityManager = (EntityManager *) newEntityManager;
+}
+
+void game_setScreen(Screen * screen)
 {
-	entityManager = newEntityManager;
+	nextScreen = screen;
 }
 
 void game_removeEntity(void * entity)
@@ -60,7 +89,7 @@ void game_loadGame(BaseGame * game)
 
 void game_clearEntities()
 {
-	//TODO clearing code
+	entityManager->clear(entityManager);
 }
 
 void game_stopGame()
@@ -70,6 +99,7 @@ void game_stopGame()
 	}
 	game_clearEntities();
 	//TODO remove entityManager
+	free(entityManager);
 	free(currentGame);
 }
 

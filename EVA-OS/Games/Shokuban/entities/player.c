@@ -4,7 +4,7 @@
 * Created: 11/30/2013 11:41:24 PM
 *  Author: Elmar
 */
-#include <Games/Shokuban/player.h>
+#include <Games/Shokuban/entities/player.h>
 
 static void update(GameDetails * gameDetails, void * entity, uint16_t deltaT);
 static void draw(GameDetails * gameDetails, void * entity);
@@ -28,13 +28,16 @@ static void update(GameDetails * gameDetails, void * entity, uint16_t deltaT)
 {
 	Player * self = (Player *) entity;
 	if(gameDetails->gameInput->button_isTyped(BUTTONS_UP)){
-		move(0, 8,self);
+		move(0, CELL_SIZE,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_DOWN)){
-		move(0, -8,self);
+		move(0, -CELL_SIZE,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_LEFT)){
-		move(-8, 0,self);
+		move(-CELL_SIZE, 0,self);
 	}else if(gameDetails->gameInput->button_isTyped(BUTTONS_RIGHT)){
-		move(8, 0,self);
+		move(CELL_SIZE, 0,self);
+	}
+	if(gameDetails->gameInput->button_isTyped(BUTTONS_SELECT)){
+		self->entityManager->removeEntity(self->entityManager,self);//self->entityManager->clear(self->entityManager);
 	}
 }
 
@@ -60,6 +63,7 @@ static void move(int8_t deltaX, int8_t deltaY, Player * self)
 			other->xPos+=deltaX;
 			self->moves++;
 			self->victory(self);
+			return;
 		}
 	} else if(other->type == GAP_TYPE){
 		self->entity.alive = 0;
@@ -71,5 +75,6 @@ static void move(int8_t deltaX, int8_t deltaY, Player * self)
 static void draw(GameDetails * gameDetails, void * entity)
 {
 	Player * self = (Player *) entity;
-	graphical_drawCircle(self->entity.xPos+4, self->entity.yPos+4, 4, 1, RED);
+	graphical_drawCircle(self->entity.xPos+CELL_SIZE/2, self->entity.yPos+CELL_SIZE/2, CELL_SIZE/2 - 1, 0, BLACK);
+	graphical_drawCircle(self->entity.xPos+CELL_SIZE/2, self->entity.yPos+CELL_SIZE/2, CELL_SIZE/2 - 2, 1, GREEN);
 }

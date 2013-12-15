@@ -5,24 +5,69 @@
  *  Author: Elmar
  */ 
 
+/*
+
+start
+---
+0|?
+---
+
+add entity
+---   ----
+E|N-->0|?
+---   ----
+
+add entity
+---   ----  ---   
+E|N-->E|N-->0|?
+---   ----  ---   
+
+remove entity
+---   ----
+E|N-->0|?
+---   ----  
+*/
+
 #include <Libs/Game/DefaultEntityManager.h>
 
+/*! \brief this is the DefaultEntityManager own's implementation of the update entities method
+ *	\param [in]	entityManager The entity manager used. A reference is given here for easy entity aces
+ *  \param [in] gameDetails Gamedetails are given here, these are used for updating an entity (contains input methods etc)     
+ */
 static void updateEntities(EntityManager * entityManager, GameDetails * gameDetails);
+/*! \brief this is the DefaultEntityManager own's implementation to add entities
+ *	\param [in]	entityManager The entity manager used. A reference is given here for easy entity access
+ *  \param [in] newEntity this is a pointer to the new entity just made, possible to cast to an Entity
+ *	Specifics about this implementation: adding an entity to the end of the list is fast. Adding an entity in
+ *  the middle of the list is same speed as iterating. Also requires 1 empty entity to be available at
+ *	all time (automated).  
+ */
 static void addEntity(EntityManager * entityManager, void * newEntity);
+/*! \brief this is the DefaultEntityManager own's implementation of the getEntity method
+ *	\param [in]	entityManager The entity manager used. A reference is given here for easy entity access
+ *  \param [in] x the x vector
+ *  \param [in] y the y vector
+ *	\retval the first entity in the list with the same x and y vector     
+ */
 static void * getEntity(EntityManager * entityManager, uint16_t x, uint16_t y);
+/*! \brief this is the DefaultEntityManager own's implementation of the clear method
+ *	\param [in]	entityManager The entity manager used. A reference is given here for easy entity access 
+ *	removes all the entities, and initializes the list again
+ */
 static void clear(EntityManager * entityManager);
+/*! \brief this is the DefaultEntityManager own's implementation of the removeEntity method
+ *	\param [in]	entityManager The entity manager used. A reference is given here for easy entity access
+ *  \param [in] oldEntity pointer to the entity to be removed given     
+ */
 static uint8_t removeEntity(EntityManager * entityManager, void * oldEntity);
 
 
-EntityManager * defaultManager_constructor(uint16_t maxSize)
+void * defaultManager_constructor(uint16_t maxSize)
 {
 	EntityManager * entityManager = malloc(sizeof(EntityManager));
 	entityManager->entityId = 1;
 	entityManager->entitySize = 0;
-	entityManager->entityListRoot = malloc(sizeof(struct EntityList));
-	entityManager->entityListRoot->entity = NULL;
-	entityManager->entityListRoot->nextEntity = NULL;
-	entityManager->entityListEnd = entityManager->entityListRoot;
+	entityManager->entityList = newList();
 	entityManager->updateEntities = updateEntities;
 	entityManager->addEntity = addEntity;
 	entityManager->getEntity = getEntity;
@@ -33,99 +78,62 @@ EntityManager * defaultManager_constructor(uint16_t maxSize)
 
 static void updateEntities(EntityManager * entityManager, GameDetails * gameDetails)
 {
-	struct EntityList * currentNode = entityManager->entityListRoot;
-	while(currentNode->entity != NULL){
-		if(currentNode->entity->update != NULL){
-			currentNode->entity->update(gameDetails, currentNode->entity, gameDetails->deltaT);
-		}
-		if(currentNode->entity->draw != NULL){
-			currentNode->entity->draw(gameDetails, currentNode->entity);
-		}
-		if(currentNode->entity->alive == 0){
-			if(currentNode->entity->destructor != NULL){
-				currentNode->entity->destructor(currentNode->entity);
+	if(entityManager->entityList->size>0){
+		Entity * entity;
+		list_startItterate(entityManager->entityList);
+		while((entity = (Entity *) list_next(entityManager->entityList)) != NULL){
+			if(entity->update != NULL){
+				entity->update(gameDetails,entity,gameDetails->deltaT);
 			}
-			removeEntity(entityManager, currentNode->entity);
+			if(entity->draw != NULL){
+				entity->draw(gameDetails,entity);
+			}
+			if(entity->alive == 0){
+				if(entity->destructor != NULL){
+					entity->destructor(entity);
+				}
+				list_removeCurrent(entityManager->entityList);
+			}
 		}
-		currentNode = currentNode->nextEntity;
 	}
 }
 
 static void addEntity(EntityManager * entityManager, void * newEntity)
 {
 	Entity * entity = (Entity *) newEntity;
+	entity->id = ++entityManager->entityId;
 	entity->alive = 1;
-	entity->id = entityManager->entityId;
-	entityManager->entityListEnd->entity = entity;
-	entityManager->entityListEnd->nextEntity = malloc(sizeof(struct EntityList));
-	entityManager->entityListEnd = entityManager->entityListEnd->nextEntity;
-	entityManager->entityListEnd->entity = NULL;
-	entityManager->entityId++;
+	list_add(entityManager->entityList, newEntity);
 }
 
 static void * getEntity(EntityManager * entityManager, uint16_t x, uint16_t y)
 {
-	struct EntityList * currentNode = entityManager->entityListRoot;
-	while(currentNode->entity != NULL){
-		if(currentNode->entity->xPos == x && currentNode->entity->yPos == y){
-			return currentNode->entity;
+	list_startItterate(entityManager->entityList);
+	Entity * entity;
+	while((entity = (Entity *) list_next(entityManager->entityList))!=NULL){
+		if(entity->xPos == x && entity->yPos == y){
+			return entity;
 		}
-		currentNode = currentNode->nextEntity;
 	}
 	return NULL;
 }
 
 static void clear(EntityManager * entityManager)
 {
-	struct EntityList * currentNode = entityManager->entityListRoot;
-	struct EntityList * tempNode;
-
-	while(currentNode->entity != NULL){
-		if(currentNode->entity->destructor!=NULL)
-			currentNode->entity->destructor(currentNode->entity);
-		free(currentNode->entity);
-		
-		tempNode = currentNode->nextEntity;
-		free(currentNode);
-		currentNode = tempNode;
+	list_startItterate(entityManager->entityList);
+	Entity * entity;
+	while((entity = (Entity *) list_next(entityManager->entityList))!=NULL){
+		if(entity->destructor != NULL){
+			entity->destructor(entity);
+		}
+		free(entity);
 	}
-	entityManager->entityListRoot = malloc(sizeof(struct EntityList));
-	entityManager->entityListRoot->entity = NULL;
-	entityManager->entityListEnd = entityManager->entityListRoot;
+	list_clear(entityManager->entityList);
 }
 
 static uint8_t removeEntity(EntityManager * entityManager, void * oldEntity)
 {
-	struct EntityList * currentNode = entityManager->entityListRoot;
-	while(currentNode->entity != NULL){
-		if(currentNode->entity == (Entity*)oldEntity){
-			currentNode->entity->destructor(currentNode->entity);
-			free(currentNode->entity);
-			//Free the node TODO
-		}
-		currentNode = currentNode->nextEntity;
-	}
-	return 0;	
+	Entity * entity = (Entity *) oldEntity;
+	entity->alive = 0;
+	return 1;	
 }
-/*
-
-start
----
-0|0
----
-
-add entity
----   ----
-E|N-->0|0
----   ----
-
-add entity
----   ----  ---   
-E|N-->E|N-->0|0
----   ----  ---   
-
-add entity
----   ----  ---   ----
-E|N-->E|N-->E|N-->0|0
----   ----  ---   ----
-*/

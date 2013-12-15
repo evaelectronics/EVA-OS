@@ -11,6 +11,7 @@
 
 #include <sam4s.h>
 #include <Libs/Game/game.h>
+#include <Games/Shokuban/entities/types.h>
 
 typedef struct Box Box;
 
