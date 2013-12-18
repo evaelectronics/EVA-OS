@@ -10,9 +10,8 @@
 
 static void loadLevel(struct Map * map);
 static void victory(Player * player);
-static void update(Screen * screen, GameDetails * gameDetails);
 static void draw(Screen * screen, GameDetails * gameDetails);
-static void create();
+static void create(Screen * screen);
 
 static uint8_t curLevel;
 
@@ -25,7 +24,7 @@ Screen * newSokobanGame(uint8_t level)
 	return game;
 }
 
-static void create()
+static void create(Screen * screen)
 {
 	loadLevel(map_loadLevel(curLevel));
 }

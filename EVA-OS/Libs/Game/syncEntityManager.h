@@ -22,6 +22,7 @@ struct SyncManager{
 	uint16_t maxSize;	   /*!< manager specific variables here. This one has a max amount of entities */
 	List * removeList;	   /*!< list containing all the entities to remove. TODO REPLACE WITH QUEUE */
 	List * addList;		   /*!< list containing all the entities to add upon next update. TODO REPLACE WITH QUEUE */
+	/* @} */
 };
 
 /*!  */

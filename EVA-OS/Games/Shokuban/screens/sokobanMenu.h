@@ -20,7 +20,7 @@ struct SokobanMenu {
 	List * buttons;
 };
 
-SokobanMenu * newSokobanMenu();
+Screen * newSokobanMenu();
 
 
 

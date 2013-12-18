@@ -75,23 +75,6 @@ void * syncManager_constructor(uint16_t maxSize)
 	return syncManager;
 }
 
-static void * newEntity(EntityManager * entityManager)
-{
-	Entity * entity = malloc(sizeof(Entity));
-	if(entity == NULL){
-		//TODO CRASH
-		return NULL;
-	}
-	entity->alive = 1;
-	entity->id = entityManager->entityId++;
-	entity->destructor = NULL;
-	entity->xPos = 0;
-	entity->yPos = 0;
-	entity->update = NULL;
-	entity->draw = NULL;
-	return entity;
-}
-
 static void updateEntities(EntityManager * entityManager, GameDetails * gameDetails)
 {
 	SyncManager * sync = (SyncManager *) entityManager;
@@ -108,12 +91,8 @@ static void updateEntities(EntityManager * entityManager, GameDetails * gameDeta
 		while(tempNode->nextNode != NULL){
 			entity = (Entity *) tempNode->data;
 			if(entity != NULL){
-				if(entity->update != NULL){
-					entity->update(gameDetails,entity,gameDetails->deltaT);
-				}
-				if(entity->draw != NULL){
-					entity->draw(gameDetails,entity);
-				}
+				entity->update(gameDetails,entity,gameDetails->deltaT);
+				entity->draw(gameDetails,entity);
 				if(entity->alive == 0){
 					entityManager->removeEntity(entityManager,entity);
 				}
@@ -127,9 +106,7 @@ static void updateEntities(EntityManager * entityManager, GameDetails * gameDeta
 		while(tempNode->nextNode != NULL){
 			entity = (Entity *) tempNode->data;
 			if(entity != NULL){
-				if(entity->destructor != NULL){
-					entity->destructor(entity);
-				}
+				entity->destructor(entity);
 			}
 			tempNode = tempNode->nextNode;
 		}

@@ -8,24 +8,34 @@
 
 static void update(Screen * screen, GameDetails * gameDetails);
 static void draw(Screen * screen, GameDetails * gameDetails);
+static void create(Screen * screen);
 static void dispose(Screen * screen);
 static void loadLevel(GuiButton * guiButton);
-static void levelSelect(Screen * screen, uint8_t level);
+static void levelSelect(SokobanLevelMenu * mainMenu, uint8_t level);
 static void buttonDraw(GuiButton * guiButton);
 static void mainMenu(GuiButton * button);
 
+static struct RGBcolour * gray;
 #define BUTTON_SIZE 25
 #define BUTTON_OFFSET 6
 
-SokobanLevelMenu * newSokobanLevelMenu()
+Screen * newSokobanLevelMenu()
 {
 	SokobanLevelMenu * sokobanLevelMenu = malloc(sizeof(SokobanLevelMenu));
-	sokobanLevelMenu->buttons = newList();
-	sokobanLevelMenu->levelSelected = 1;
 	sokobanLevelMenu->screen = *newScreen();
 	sokobanLevelMenu->screen.draw = draw;
 	sokobanLevelMenu->screen.update = update;
 	sokobanLevelMenu->screen.dispose = dispose;
+	sokobanLevelMenu->screen.create = create;
+	return &sokobanLevelMenu->screen;
+}
+
+static void create(Screen * screen)
+{
+	SokobanLevelMenu * sokobanLevelMenu = (SokobanLevelMenu *) screen;
+	gray = graphical_createRGBColour(100,100,100);
+	sokobanLevelMenu->buttons = newList();
+	sokobanLevelMenu->levelSelected = 1;
 	sokobanLevelMenu->exitButton = newGuiButton(BUTTON_OFFSET,BUTTON_OFFSET,CANVASS_WIDTH - BUTTON_OFFSET * 2 + 2,25);
 	sokobanLevelMenu->exitButton->action = mainMenu;
 	uint8_t i  = 0;
@@ -39,12 +49,10 @@ SokobanLevelMenu * newSokobanLevelMenu()
 		list_add(sokobanLevelMenu->buttons, newLevel);
 	}
 	levelSelect(sokobanLevelMenu,1);
-	return sokobanLevelMenu;
 }
 
-static void levelSelect(Screen * screen, uint8_t level)
+static void levelSelect(SokobanLevelMenu * mainMenu, uint8_t level)
 {
-	SokobanLevelMenu * mainMenu = (SokobanLevelMenu *) screen;
 	Node * tempNode = mainMenu->buttons->head;
 	while(tempNode->nextNode != NULL) {
 		LevelButton * guiButton = (LevelButton *)tempNode->data;
@@ -75,14 +83,14 @@ static void update(Screen * screen, GameDetails * gameDetails)
 	if(gameDetails->gameInput->button_isTyped(BUTTONS_DOWN)){
 		if(sokobanlevelMenu->levelSelected<11) {
 			sokobanlevelMenu->levelSelected+=5;
-			levelSelect(screen,sokobanlevelMenu->levelSelected);
+			levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 		} else {
 			if(sokobanlevelMenu->exitButton->selected){
 				sokobanlevelMenu->levelSelected%=10;
 				sokobanlevelMenu->exitButton->selected = 0;
-				levelSelect(screen,sokobanlevelMenu->levelSelected);
+				levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 			} else {
-				levelSelect(screen,0);	//Deselect
+				levelSelect(sokobanlevelMenu,0);	//Deselect
 				sokobanlevelMenu->exitButton->selected = 1;
 			}
 		}
@@ -90,14 +98,14 @@ static void update(Screen * screen, GameDetails * gameDetails)
 	if(gameDetails->gameInput->button_isTyped(BUTTONS_UP)){
 		if(sokobanlevelMenu->levelSelected>5) {
 			sokobanlevelMenu->levelSelected-=5;
-			levelSelect(screen,sokobanlevelMenu->levelSelected);
+			levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 		} else {
 			if(sokobanlevelMenu->exitButton->selected){
 				sokobanlevelMenu->levelSelected+=10;
 				sokobanlevelMenu->exitButton->selected = 0;
-				levelSelect(screen,sokobanlevelMenu->levelSelected);
+				levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 			} else {
-				levelSelect(screen,0);	//Deselect
+				levelSelect(sokobanlevelMenu,0);	//Deselect
 				sokobanlevelMenu->exitButton->selected = 1;
 			}
 		}
@@ -109,7 +117,7 @@ static void update(Screen * screen, GameDetails * gameDetails)
 			} else {
 				sokobanlevelMenu->levelSelected--;
 			}
-			levelSelect(screen,sokobanlevelMenu->levelSelected);
+			levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 		}
 	}
 	if(gameDetails->gameInput->button_isTyped(BUTTONS_RIGHT)){
@@ -119,7 +127,7 @@ static void update(Screen * screen, GameDetails * gameDetails)
 			} else {
 				sokobanlevelMenu->levelSelected++;
 			}
-			levelSelect(screen,sokobanlevelMenu->levelSelected);
+			levelSelect(sokobanlevelMenu,sokobanlevelMenu->levelSelected);
 		}
 	}
 }
@@ -131,7 +139,7 @@ static void draw(Screen * screen, GameDetails * gameDetails)
 	Node * tempNode = mainMenu->buttons->head;
 	while(tempNode->nextNode != NULL) {
 		LevelButton * guiButton = (LevelButton *)tempNode->data;
-		guiButton->button.draw(guiButton);
+		guiButton->button.draw(&guiButton->button);
 		tempNode = tempNode->nextNode;
 	}
 	mainMenu->exitButton->draw(mainMenu->exitButton);
@@ -140,7 +148,6 @@ static void draw(Screen * screen, GameDetails * gameDetails)
 static void buttonDraw(GuiButton * guiButton)
 {
 	LevelButton * levelButton = (LevelButton *) guiButton;
-	struct RGBcolour * gray = graphical_createRGBColour(100,100,100);
 	if(levelButton->level <= levelProgress){
 		graphical_drawRectangle(guiButton->x,guiButton->y,guiButton->x+guiButton->width-3,guiButton->y+guiButton->height-3,1,RED);
 	} else {
@@ -151,7 +158,6 @@ static void buttonDraw(GuiButton * guiButton)
 	} else {
 		graphical_drawRectangle(guiButton->x,guiButton->y,guiButton->x+guiButton->width,guiButton->y+guiButton->height,0,BLACK);
 	}
-	free(gray);
 }
 
 static void dispose(Screen * screen)
@@ -163,6 +169,7 @@ static void dispose(Screen * screen)
  		tempNode = tempNode->nextNode;
  	}
  	list_clear(levelMenu->buttons);
+	 free(gray);
 }
 
 static void loadLevel(GuiButton * button)

@@ -26,12 +26,8 @@ void game_render()
 	updateGameDetails();
 	
 	if(currentGame->screen != NULL) {
-		if(currentGame->screen->draw != NULL) {
-			currentGame->screen->draw(currentGame->screen, gameDetails);
-		}
-		if(currentGame->screen->update != NULL){
-			currentGame->screen->update(currentGame->screen, gameDetails);
-		}
+		currentGame->screen->draw(currentGame->screen, gameDetails);
+		currentGame->screen->update(currentGame->screen, gameDetails);
 	}
 		
 	if(currentGame->updateSpeficific != NULL)
@@ -45,14 +41,10 @@ void game_render()
 	
 	if(nextScreen != NULL){
  		if(currentGame->screen!=NULL){
- 			if(currentGame->screen->dispose != NULL) {
- 				currentGame->screen->dispose(currentGame->screen);
- 			}
+ 			currentGame->screen->dispose(currentGame->screen);
  		}
  		currentGame->screen = nextScreen;
- 		if(currentGame->screen->create != NULL){
- 			currentGame->screen->create();
- 		}
+ 		currentGame->screen->create(currentGame->screen);
 		nextScreen = NULL;
 	}
 }

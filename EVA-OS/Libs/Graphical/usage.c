@@ -11,7 +11,7 @@
 #include <Display/display.h>
 #include <Delay/delay.h>
 #include <Graphical/graphical.h>
-
+#include <Libs/System/systemservice.h>
 
 
 #define MOVEMENTSPEED 10
@@ -23,7 +23,7 @@
  *
  * \return Unused (ANSI-C compatibility).
  */
-int grapical_main(void)
+int graphic_main(void)
 {	
 	struct RGBcolour* colourLookup[] = {RED, GREEN, BLUE, CYAN, MAGNETA, YELLOW, WHITE, graphical_createRGBColour(104,13,200)};
 	uint8_t centerX = 14;

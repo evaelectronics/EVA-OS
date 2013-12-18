@@ -12,6 +12,7 @@
 #include <sam4s.h>
 #include <libs/Game/game.h>
 #include <libs/Game/screen.h>
+#include <Games/Shokuban/screens/sokobanLevelMenu.h>
 #include <Games/Shokuban/map.h>
 
 Screen * newSokobanGame(uint8_t level);

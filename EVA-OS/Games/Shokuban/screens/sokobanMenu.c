@@ -17,7 +17,7 @@ static void dispose(Screen * screen);
 static void startGame(GuiButton * guiButton);
 static void exitGame(GuiButton * guiButton);
 
-SokobanMenu * newSokobanMenu()
+Screen * newSokobanMenu()
 {
 	SokobanMenu * mainMenu = malloc(sizeof(SokobanMenu));
 	mainMenu->screen = *newScreen();
@@ -36,7 +36,7 @@ SokobanMenu * newSokobanMenu()
 	list_add(mainMenu->buttons, levelSelectButton);
 	list_add(mainMenu->buttons, optionsButton);
 	list_add(mainMenu->buttons, exitGameButton);
-	return mainMenu;
+	return &mainMenu->screen;
 }
 
 static void update(Screen * screen, GameDetails * gameDetails)

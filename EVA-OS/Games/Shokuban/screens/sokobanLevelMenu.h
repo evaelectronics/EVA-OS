@@ -28,6 +28,6 @@ struct SokobanLevelMenu {
 };
 
 
-SokobanLevelMenu * newSokobanLevelMenu();
+Screen * newSokobanLevelMenu();
 
 #endif /* SOKOBANLEVELMENU_H_ */

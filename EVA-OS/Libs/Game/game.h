@@ -10,29 +10,18 @@
 #define GAME_H_
 
 typedef struct GameDetails GameDetails;
-typedef struct Entity Entity;
 typedef struct BaseGame BaseGame;
 typedef struct EntityManager EntityManager;
 
-#include <Libs/Game/screen.h>
 #include <Libs/System/systemservice.h>
 #include <Drivers/Buttons/buttons.h>
 #include <Libs/Graphical/graphical.h>
 #include <Util/Collection/list.h>
+#include <Libs/Game/entity.h>
+#include <Libs/Game/screen.h>
 
 #define CANVASS_WIDTH 159
 #define CANVASS_HEIGHT 127
-
-struct Entity {
-	int16_t xPos;
-	int16_t yPos;
-	uint8_t alive;
-	uint32_t id;
-	uint8_t type;
-	void (*update)(GameDetails *, void *, uint16_t);
-	void (*draw)(GameDetails *, void *);
-	void (*destructor)(Entity *);
-};
 
 struct GameDetails {
 	uint16_t previousUpdateTime;
@@ -63,7 +52,6 @@ struct EntityManager{
 	
 	List * entityList;
 	
-	Entity (*newEntity)(EntityManager *);
 	void (*addEntity)(EntityManager *, void *);
 	
 	void * (*getEntity)(EntityManager *, uint16_t, uint16_t);

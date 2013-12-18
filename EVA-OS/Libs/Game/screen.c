@@ -8,12 +8,37 @@
 
 #include <libs/Game/screen.h>
 
+static void create(Screen * screen);
+static void update(Screen * screen, GameDetails * gameDetails);
+static void draw(Screen * screen, GameDetails * gameDetails);
+static void dispose(Screen * screen);
+
 Screen * newScreen()
 {
 	Screen * screen = malloc(sizeof(Screen));
-	screen->create = NULL;
-	screen->dispose = NULL;
-	screen->draw = NULL;
-	screen->update = NULL;
+	screen->create = create;
+	screen->dispose = dispose;
+	screen->draw = draw;
+	screen->update = update;
 	return screen;
+}
+
+static void create(Screen * screen)
+{
+	
+}
+
+static void update(Screen * screen, GameDetails * gameDetails)
+{
+
+}
+
+static void draw(Screen * screen, GameDetails * gameDetails)
+{
+	
+}
+
+static void dispose(Screen * screen)
+{
+	
 }
